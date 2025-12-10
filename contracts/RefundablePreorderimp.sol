@@ -47,9 +47,21 @@ contract RefundablePreorderImp is RefundablePreorder {
 
     }
 
-    function claimRefund()external override{
+    function claimRefund() external override {
+    require(block.timestamp >= _deadline, "Deadline not reached");
+    require(!_delivered, "Product already delivered");
+    BuyerInfo storage buyer = _buyers[msg.sender];
+    require(buyer.amountpaid > 0, "No preorder found");
+    require(!buyer.refunded, "Already refunded");
+    buyer.refunded = true;
+    uint256 refundAmount = buyer.amountpaid;
+    buyer.amountpaid = 0; 
+    (bool success, ) = msg.sender.call{value: refundAmount}("");
+    require(success, "Refund failed");
 
-    }
+    emit RefundClaimed(msg.sender, refundAmount);
+}
+
 
     function markProductDelivered() external override OnlySeller(){
         require(!_delivered, "Already delivered");
