@@ -39,6 +39,7 @@ contract RefundablePreorderImp is RefundablePreorder {
         _productName = productName_;
         _unitPrice = unitPrice_;
         _deadline = deadline_;
+        _seller = msg.sender; // added
 
     }
 
