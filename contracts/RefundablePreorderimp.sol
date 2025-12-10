@@ -62,8 +62,16 @@ contract RefundablePreorderImp is RefundablePreorder {
 
     }
 
-    function getBuyerInfo(address buyer) external view override returns(uint256 quatity, uint256 amountPaid, bool refunded){
-        
+     mapping(address => BuyerInfo) private _buyers;
+
+    function getBuyerInfo(address buyer)
+        external
+        view
+        override
+        returns (uint256 quantity, uint256 amountPaid, bool refunded)
+    {
+        BuyerInfo storage info = _buyers[buyer];
+        return (info.quantity, info.amountpaid, info.refunded);
     }
 
     function getPreorderInfo() external view override returns(string memory productName_, uint256 unitPrice_, uint256 deadline_, uint256 totalQuantity_, uint256 totalCollected_, address seller_, bool delivered_, bool fundswithdrawn_){
